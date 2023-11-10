@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,6 +10,7 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    [SerializeField] private TextMeshProUGUI _hightScoreAndName;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -18,7 +18,12 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    
+
+    private void Awake()
+    {
+        SetHightScoreAndName();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -62,6 +67,11 @@ public class MainManager : MonoBehaviour
         }
     }
 
+    private void SetHightScoreAndName()
+    {
+        _hightScoreAndName.text = $"Score: {MMainManager.Instance.highScore} : Name: {MMainManager.Instance.highPName}";
+    }
+
     void AddPoint(int point)
     {
         m_Points += point;
@@ -70,6 +80,13 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        if (MMainManager.Instance.highScore <= m_Points)
+        {
+            MMainManager.Instance.highScore = m_Points;
+            MMainManager.Instance.highPName = MMainManager.Instance.playerName;
+            MMainManager.Instance.SavePLayerData();
+        }
+
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
